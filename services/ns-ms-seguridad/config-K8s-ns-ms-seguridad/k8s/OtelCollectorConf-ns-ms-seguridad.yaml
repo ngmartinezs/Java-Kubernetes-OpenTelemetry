@@ -1,0 +1,150 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ns-ms-seguridad
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-conf
+  namespace: ns-ms-seguridad
+  labels:
+    app: opentelemetry
+    component: otel-collector-conf
+data:
+  otel-collector-config: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+          http:
+    processors:
+      memory_limiter:
+        check_interval: 1s
+        limit_mib: 2000
+      batch:  
+    exporters:
+      logging:
+        verbosity: normal
+      otlphttp/elastic:
+         endpoint: ${ELASTICSEARCH_URL}
+         compression: none
+         tls:
+           insecure: false
+         headers:
+           Authorization: ${ELASTICSEARCH_API_KEY}
+      otlphttp/newrelic:
+         endpoint: ${NEW_RELIC_URL}
+         headers:
+           api-key: ${NEW_RELIC_API_KEY}
+         compression: none
+         tls:
+           insecure: false
+    extensions:
+      health_check:
+      zpages:
+        endpoint: :55679
+    service:
+      extensions: [zpages, health_check]
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [logging,  otlphttp/newrelic]
+        metrics:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [logging, otlphttp/elastic]
+        logs:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlphttp/elastic, logging]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-collector-deployment
+  namespace: ns-ms-seguridad
+  labels:
+    app: opentelemetry
+    component: otel-collector-deployment
+spec:
+  selector:
+    matchLabels:
+      app: opentelemetry
+      component: otel-collector-deployment
+  minReadySeconds: 5
+  replicas: 1
+  template:
+    metadata:
+      namespace: ns-ms-seguridad
+      labels:
+        app: opentelemetry
+        component: otel-collector-deployment
+    spec:
+      containers:
+        - command:
+            - "/otelcol"
+            - "--config=/conf/otel-collector-config.yaml"
+          image: otel/opentelemetry-collector:latest
+          name: otel-collector-deployment
+          resources:
+            limits:
+              cpu: 50m
+              memory: 1Gi
+            requests:
+              cpu: 50m
+              memory: 200Mi
+          env:
+            - name: ELASTICSEARCH_URL
+              value: "https://elk-logs-pt.es.westus2.azure.elastic-cloud.com:443"
+            - name: ELASTICSEARCH_API_KEY
+              value: "Bearer key"
+            - name: NEW_RELIC_URL
+              value: "https://otlp.nr-data.net:443"
+            - name: NEW_RELIC_API_KEY
+              value: "key"
+          ports:
+            - containerPort: 4317 #otlp grpc
+            - containerPort: 4318 # otlp http
+            - containerPort: 55679 # zpages
+            - containerPort: 13133 # health check
+          volumeMounts:
+            - name: otel-collector-config-vol
+              mountPath: /conf
+      volumes:
+        - configMap:
+            name: otel-collector-conf
+            items:
+              - key: otel-collector-config
+                path: otel-collector-config.yaml
+          name: otel-collector-config-vol
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otel-collector-service
+  namespace: ns-ms-seguridad
+  labels:
+    app: opentelemetry
+    component: otel-collector-service
+spec:
+  ports:
+    - name: otlp-grpc # Default endpoint for OpenTelemetry gRPC receiver.
+      port: 4317
+      protocol: TCP
+      targetPort: 4317
+    - name: otlp-http # Default endpoint for OpenTelemetry HTTP receiver.
+      port: 4318
+      protocol: TCP
+      targetPort: 4318
+    - name: zpages
+      port: 55679
+      protocol: TCP
+      targetPort: 55679
+    - name: health-check
+      port: 8080
+      protocol: TCP
+      targetPort: 13133
+  selector:
+    component: otel-collector-deployment

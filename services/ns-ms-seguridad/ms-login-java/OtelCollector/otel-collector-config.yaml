@@ -1,0 +1,51 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 2000
+  batch:
+exporters:
+  logging:
+    verbosity: normal
+  otlphttp/elastic:
+    endpoint: "https://elk-logs-pt.apm.westus2.azure.elastic-cloud.com:443"
+    compression: none
+    tls:
+      insecure: false
+    headers:
+      Authorization: "ApiKey WEE0WVQ0b0JLZ3IzSC1tbmZESnU6R2Y5ZkZCY0RSMENJU1Jucy1QRVh6dw=="
+  otlphttp/newrelic:
+    endpoint: "https://otlp.nr-data.net:443"
+    headers:
+      api-key: "1562328f90c8db1403e3a8d20db5eef0FFFFNRAL"
+    compression: none
+    tls:
+      insecure: false
+
+extensions:
+  health_check:
+  pprof:
+    endpoint: :1888
+  zpages:
+    endpoint: :55679
+
+service:
+  extensions: [pprof, zpages, health_check]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging, otlphttp/newrelic]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging, otlphttp/newrelic]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging, otlphttp/elastic]

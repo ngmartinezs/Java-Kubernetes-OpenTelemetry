@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ns-ms-seguridad
+  labels:
+    app: ns-ms-seguridad
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ms-seguridad-configmap
+  namespace: ns-ms-seguridad
+data:
+  otel-exporter-otlp-endpoint: "http://otel-collector-service.ns-ms-seguridad.svc.cluster.local:4317"
+  otel-exporter-otlp-insecure: "true"
+  otel-traces-exporter: "otlp"
+  otel-metrics-exporter: "otlp"
+  otel-logs-exporter: "otlp"
+  database: "postgesql"
+  databaseurl: "jdbc:postgresql://db:5432/postgres"
+  databasedriver: "org.postgresql.Driver"
+  timeout-db-ms: "10000"
+  pool-db-ms: "5"
+  env: "dev"
+  
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ns-ms-seguridad-ingress
+  namespace:   ns-ms-seguridad
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: apiaks.ngms.net
+    http:
+      paths:
+      - backend:
+          service:
+            name:  ms-login-java-servicio
+            port:
+              number: 8080
+        path: /ws/security/v1/wslogin(/|$)(.*)
+        pathType: Prefix 
+status:
+  loadBalancer:
+    ingress:
+    - ip: 20.253.0.119

@@ -1,0 +1,5 @@
+{
+    "yaml.schemas": {
+        "kubernetes://schema/v1%40service": "file:///c%3A/ngmartinezs/Desarrollo/Java/Integracion-Java-Kubernetes-OpenTelemetry/services/ns-ms-seguridad/ms-login-java/k8s/ms-login-java-k8s.yaml"
+    }
+}

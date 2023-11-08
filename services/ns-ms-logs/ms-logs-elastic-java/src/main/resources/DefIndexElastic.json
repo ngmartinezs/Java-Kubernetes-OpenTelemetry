@@ -1,0 +1,24 @@
+PUT logs-v8
+{
+  "mappings": {
+    "properties": {
+      "@timestamp": {
+        "type": "date"
+      },
+      "message": {
+        "type": "object"
+      }
+    }
+  }
+
+}
+
+
+PUT /ds-logs-apm.app.ms_login_java_ws_security_v1_wslogin_authentication_valide-default-2023.09.01-000001/_settings
+{
+  "settings": {
+    "ingest": {
+      "default_processor": "logs@json-message"
+    }
+  }
+}

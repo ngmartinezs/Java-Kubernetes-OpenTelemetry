@@ -1,0 +1,113 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ns-ms-seguridad
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-datosPrincipales-java-deployment
+  namespace: ns-ms-seguridad
+  labels:
+    app: ms-datosPrincipales-java-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-datosPrincipales-java-deployment
+  template:
+    metadata:
+      labels:
+        app: ms-datosPrincipales-java-deployment
+    spec:
+      containers:
+        - name: ms-datosPrincipales-java
+          image: acrapisngms.azurecr.io/ms-datosPrincipales-java:1.0.7
+          resources:
+            limits:
+              cpu: 100m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 200Mi
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            - name: CORS
+              value: "*"
+            - name: APPVER
+              value: "1.0"
+            - name: VERDATA
+              value: "202308"
+            - name: ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: ms-seguridad-configmap
+                  key: env
+            - name: DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: ms-seguridad-configmap
+                  key: database
+            - name: DATABASEURL
+              valueFrom:
+                configMapKeyRef:
+                  name: ms-seguridad-configmap
+                  key: databaseurl
+            - name: DATABASEUSERNAME
+              value: "postgres"
+            - name: DATABASEPASSWORD
+              value: "postgres"
+            - name: DATABASEDRIVER
+              valueFrom:
+                configMapKeyRef:
+                  name: ms-seguridad-configmap
+                  key: databaseurl
+            - name: DATABASEPOOLSIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: ms-seguridad-configmap
+                  key: pool-db-ms
+            - name: DATABASETIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: ms-seguridad-configmap
+                  key: timeout-db-ms
+            - name: OTEL_TRACES_EXPORTER
+              valueFrom:
+                configMapKeyRef:
+                  name: ms-seguridad-configmap
+                  key: otel-traces-exporter
+            - name: OTEL_METRICS_EXPORTER
+              valueFrom:
+                configMapKeyRef:
+                  name: ms-seguridad-configmap
+                  key: otel-metrics-exporter
+            - name: OTEL_LOGS_EXPORTER
+              valueFrom:
+                configMapKeyRef:
+                  name: ms-seguridad-configmap
+                  key: otel-logs-exporter
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: ms-seguridad-configmap
+                  key: otel-exporter-otlp-endpoint
+            - name: NAME_COMPONENT
+              value: "wsLogin"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-datosPrincipales-java-servicio
+  namespace: ns-ms-seguridad
+  labels:
+    app: ms-datosPrincipales-java-servicio
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: ms-datosPrincipales-java-deployment

@@ -1,0 +1,318 @@
+{
+	"info": {
+		"_postman_id": "12bbb6b3-a782-47c0-8a0f-73fed18abf65",
+		"name": "ms-login-java",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3970930"
+	},
+	"item": [
+		{
+			"name": "Authentication/valide-Local",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-RqUID",
+						"value": "12",
+						"type": "text"
+					},
+					{
+						"key": "X-Channel",
+						"value": "Test",
+						"type": "text"
+					},
+					{
+						"key": "X-IdenSerialNum",
+						"value": "11390213",
+						"type": "text"
+					},
+					{
+						"key": "X-GovIssueIdenType",
+						"value": "CC",
+						"type": "text"
+					},
+					{
+						"key": "X-Company",
+						"value": "TestCompay",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "JWT",
+						"type": "text"
+					},
+					{
+						"key": "X-IpAdress",
+						"value": "127.0.8.69",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tipoDocumento\": \"CC\",\r\n    \"numeroDocumento\": \"11390213\",\r\n    \"clave\": \"11111\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/ws/security/v1/wslogin/authentication/valide",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"ws",
+						"security",
+						"v1",
+						"wslogin",
+						"authentication",
+						"valide"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authentication/valide-Cloud",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-RqUID",
+						"value": "12454",
+						"type": "text"
+					},
+					{
+						"key": "X-Channel",
+						"value": "Canal 4",
+						"type": "text"
+					},
+					{
+						"key": "X-IdenSerialNum",
+						"value": "11390213",
+						"type": "text"
+					},
+					{
+						"key": "X-GovIssueIdenType",
+						"value": "CC",
+						"type": "text"
+					},
+					{
+						"key": "X-Company",
+						"value": "TestCompay",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "JWT",
+						"type": "text"
+					},
+					{
+						"key": "X-IpAdress",
+						"value": "127.0.8.69",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tipoDocumento\": \"CC\",\r\n    \"numeroDocumento\": \"11390213\",\r\n    \"clave\": \"11111\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://apiaksngms.net/ws/security/v1/wslogin/authentication/valide",
+					"protocol": "https",
+					"host": [
+						"apiaksngms",
+						"net"
+					],
+					"path": [
+						"ws",
+						"security",
+						"v1",
+						"wslogin",
+						"authentication",
+						"valide"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authentication/estado-Cloud",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-RqUID",
+						"value": "12",
+						"type": "text"
+					},
+					{
+						"key": "X-Channel",
+						"value": "Test",
+						"type": "text"
+					},
+					{
+						"key": "X-IdenSerialNum",
+						"value": "11390213",
+						"type": "text"
+					},
+					{
+						"key": "X-GovIssueIdenType",
+						"value": "CC",
+						"type": "text"
+					},
+					{
+						"key": "X-Company",
+						"value": "TestCompay",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "JWT",
+						"type": "text"
+					},
+					{
+						"key": "X-IpAdress",
+						"value": "127.0.8.69",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://apiaksngms.net/ws/security/v1/wslogin/authentication/estado?tipoDocumento=CC&numeroDocumento=11390213",
+					"protocol": "https",
+					"host": [
+						"apiaksngms",
+						"net"
+					],
+					"path": [
+						"ws",
+						"security",
+						"v1",
+						"wslogin",
+						"authentication",
+						"estado"
+					],
+					"query": [
+						{
+							"key": "tipoDocumento",
+							"value": "CC"
+						},
+						{
+							"key": "numeroDocumento",
+							"value": "11390213"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authentication/estado-Local",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-RqUID",
+						"value": "12",
+						"type": "text"
+					},
+					{
+						"key": "X-Channel",
+						"value": "Test",
+						"type": "text"
+					},
+					{
+						"key": "X-IdenSerialNum",
+						"value": "11390213",
+						"type": "text"
+					},
+					{
+						"key": "X-GovIssueIdenType",
+						"value": "CC",
+						"type": "text"
+					},
+					{
+						"key": "X-Company",
+						"value": "TestCompay",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "JWT",
+						"type": "text"
+					},
+					{
+						"key": "X-IpAdress",
+						"value": "127.0.8.69",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/ws/security/v1/wslogin/authentication/estado?tipoDocumento=CC&numeroDocumento=11390213",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"ws",
+						"security",
+						"v1",
+						"wslogin",
+						"authentication",
+						"estado"
+					],
+					"query": [
+						{
+							"key": "tipoDocumento",
+							"value": "CC"
+						},
+						{
+							"key": "numeroDocumento",
+							"value": "11390213"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
